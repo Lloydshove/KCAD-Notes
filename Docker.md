@@ -33,10 +33,7 @@ ENTRYPOINT  <commands to start it up>
 docker build -t <name> . -f <docker file name>
 docker images
 docker rmi #remove images
-
  
-### Dockerhub
-  
 
 ## Run Image
 docker run -p <ext port>:<int port> -d nginx:alpine
@@ -47,7 +44,8 @@ docker run -p <ext port>:<int port> -d nginx:alpine
 -v <non container folder to map to>:<container folder>
 -v $(pwd):/var/www/logs   < where to write to on the how, use where I run docker run from.  
   
-  
+docker logs <container id>
+                                
 docker run -d -p 80:80 docker/getting-started
 // lots of other command line switches
   
@@ -58,3 +56,23 @@ docker rm <start of container id>
 
 ## Cross Image Comms
 
+Bridge network to communicate between containers.  Bridge for containers on same machine
+  
+docker network create --driver bridge <network name>
+docker network ls
+docker network rm <network name>
+  
+docker run -d --net=<network name> --name <name> <image name>
+  
+container name is used as the host name within the network to connect 
+  
+docker run -d --net=isoated_network --name nodeapp -p 3000:3000 -v $(pwd)/logs:/var/www/logs danwahlin/nodeapp 
+
+docker network inspect <network id>
+  
+## shell into container
+docker exec -it <containerId> <command>
+docker exec -it 12abc sh
+  
+## Docker Compose
+  
