@@ -70,9 +70,33 @@ docker run -d --net=isoated_network --name nodeapp -p 3000:3000 -v $(pwd)/logs:/
 
 docker network inspect <network id>
   
-## shell into container
+## Shell into container
 docker exec -it <containerId> <command>
 docker exec -it 12abc sh
   
 ## Docker Compose
+services with yaml configuration files - build multiple images, stop/start, view status, stream logs
+
   
+Example docker-compose.yml
+```
+  version: '3.x'
+  services:
+    app:
+      ...
+      networks:
+        - nodeapp-network
+    db:
+      ...
+      networks:
+        - nodeapp-network
+  
+  networks:
+    nodeapp-network:
+      driver: bridge
+  
+```
+
+  docker-compose build
+  docker-compose up
+  docker-compose down
