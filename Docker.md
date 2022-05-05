@@ -96,7 +96,8 @@ Example docker-compose.yml
       driver: bridge
   
 ```
-
+service name becomes the network connection name
+  
   docker-compose build
   docker-compose up
   docker-compose down
