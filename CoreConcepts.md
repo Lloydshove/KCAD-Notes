@@ -19,7 +19,26 @@ kubectl apply [resource] // update the status to the specified, doing changes as
 
 ## Pods
 
-###
+* Basic execution unit, smallest and simplest unit to create or deploy.
+* Have IP, memory, volumes etc.  shared across containers
+* Pods run containers.
+* Pods are how to organize parts of an application
+* Master Node runs pods on other nodes
+  * Nodes can run multiple replicas within it
+  * Each pod has own cluster IP
+  * Pod containers share same network namespace and loopback so can easily communicate with each other
+  * Multiple containers within same pod need to have unique IPs
+    * Called *sidecar container* when they are closely linked and need to both start up together
+    * 1 container per pod more common
+  * Pods never span nodes, always in 1 node.
+
+### Running
+
+kubectl run [podname] --image=nginx:alpine
+kubectl port-forward [podname] [ext port]:[int port] 
+kubectl delete pod [podname]
+kubectl delete deployment [name of deployment] //to stop pod coming back when using deployments
+
 
 ###
 
