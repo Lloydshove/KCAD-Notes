@@ -98,10 +98,53 @@ HTTPGetAction - against container
 
 
 ## Deployments
+Deployments and ReplicaSets ensure pods stay running and can be used to scale
 
-###
+kubectl get deployments
+kubectl get deployment --show-labels
+kubectl ger deployment -l [label name=value]
+kubectl scale deployment [deployment-name] --replicas=[number of replicas]
+kubectl scale -f [deployment filename] --replicas=[number of replicas]
 
-###
+### ReplicaSets
+- container is in a pod is in a ReplicaSet
+- self healing mechanism that brings deleted pods back to life
+- provides fault tollerance and scaling horizontalls
+- relies on pod templates
+
+### Deployments
+- Manages ReplicaSets
+- Allows Zero downtime updating by creating and deploying replicasets
+- Supports rollback functionality
+- Creates unique labels for replica sets and pods
+- Similar Yaml to ReplicaSet
+
+Selector using labels to find any templates that match those labels and use them
+*Example*
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: frontend
+    labels:
+        app: my-nginx
+        tier: frontend
+spec:
+  selector:
+    matchLabels:
+        tier: frontend
+  template:
+    metadata:
+        labels:
+          tier: frontend
+    spec:
+      containers:
+        - name: my-nginx
+          image: nginx:alpine
+          ports:
+           - containerPort: 80
+```
+
 
 ## Services
 
