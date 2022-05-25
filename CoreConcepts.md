@@ -43,6 +43,14 @@ spec:
     image: nginx:alpine
     ports:
     - containerPort : 80
+    livenessProbe:
+      httpGet:
+        path: /index.html
+        port: 80
+      initialDelaySeconds: 15
+      timeoutSeconds: 2
+      periodSeconds:  5
+      failureThreshold: 1
 ```
 
 --save-config adds annotations to the top of the yaml applied adding detail of the yaml applied.
@@ -72,7 +80,22 @@ kubectl delete pod [podname]
 kubectl delete deployment [name of deployment] //to stop pod coming back when using deployments
 
 
-###
+### Probes
+Diagnostic that runes periodically
+
+*Liveness* is it sick or health
+*Readiness* is it ready to receive requests
+
+Failed pod containers are restarted by default (can override)
+
+*Types*
+ExecAction - an action inside container
+TCPSocketAction - check against container IP on a specified port
+HTTPGetAction - against container
+
+*Success/Fail/Unknown* 
+
+
 
 ## Deployments
 
