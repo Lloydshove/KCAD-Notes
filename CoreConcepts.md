@@ -132,7 +132,7 @@ metadata:
         tier: frontend
 spec:
   replicas:4 
-  minReadySeconds: 10 
+  minReadySeconds: 10   # wait this long to confirm process really working before replacing existing version
   selector:
     matchLabels:
         tier: frontend
@@ -154,10 +154,98 @@ This is default and automatic.
 
 
 ## Services
+Cannot rely on IP addresses of pods, so need services.
+Uses labels to associate Services and Pods
+Layer 4 TCP/IP
+Load balances between pods
+Services are NOT ephemeral
 
-###
+### Types
+#### ClusterIP 
+expose service on a cluster-internal IP. (default)
+only pods within the cluster can communicate to each other
 
-###
+#### NodePort 
+Externally expose the service on each Node's IP at a static port (30000-32767 by default)
+Proxies the allocated port to internal pod allocated port
+
+#### LoadBalancer 
+Provision an external IP to act as a load balancer for the service
+Exposes externally
+Useful with cloud providers load balancer
+Nodeport and ClusterIP services created - Loadbalancer proxies that down to the nodes
+
+
+#### ExternalName 
+Maps a service to a DNS name or IP so pods are not exposed to the actual location of the external service
+
+### Creating
+
+Expose externally pods deployments or services : 
+kubectl port-forward pod/[pod name] 8080:80
+kubectl port-forward deployment/[deployment name] 8080:80
+kubectl port-forward service/[service name] 8080:80
+
+```
+apiVersion:  v1
+kind: Service
+metadata:
+  name: nginx
+  labels: 
+    app : nginx
+  
+spec: 
+  type: ClusterIp # default?
+  selector:
+    app: nginx
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+```
+
+```
+....
+spec:
+  type: NodePort
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31000 #optional as you get one dynamically .  same as port-forward command
+```
+
+
+
+```
+....
+metadata:
+  name: external-service
+spec:
+  type: ExternalName
+  externalName: api.acmecorp.com
+  ports:
+  - port: 80
+```
+
+
+
+....
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    targetPort: 80
+```
+
+```
+
+
+Name of service in metadata section gives the service an internal DNS entry.  e.g. frontend could call a service named backend with "backend:port"
+
 
 ## Storage
 
