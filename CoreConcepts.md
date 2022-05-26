@@ -8,25 +8,25 @@ Main Benefits
 
 ## Commands
 
-kubectl version
-kubectl cluster-info
-kubectl get all  //Info on pods, deployment, services ++ 
-kubectl get pods
-kubectl get pod [podname] -o yaml. //or json
-kubectl get services
-kubectl run [container name] --image=[image-name]
-kubectl describe pod [podname].  // also shows events that happened to the pod
-kubectl port-forward [pod] [ports]  // exposing cluster ips and ports outside of the pod
-kubectl expose ...  // exposing service features outside
-kubectl create [resource] // creating resources
-kubectl apply [resource] // update the status to the specified, doing changes as needed
-kubectl delete pod [podname] 
-kubectl delete -f [yaml fil]
-kubectl create -f [yaml file] --dry-run --validate=true
-kubectl apply -f [yaml file] --save-config  //adds annotations about yaml that was last run to understand state
-kubectl edit -f [yaml file]  //lets you edit it in console
-kubectl patch.  // patch a specific property
-kubectl exec [podname] [command e.g. sh] // run a command inside the image of the pod
+* kubectl version 
+* kubectl cluster-info 
+* kubectl get all  //Info on pods, deployment, services ++ 
+* kubectl get pods 
+* kubectl get pod [podname] -o yaml. //or json
+* kubectl get services
+* kubectl run [container name] --image=[image-name]
+* kubectl describe pod [podname].  // also shows events that happened to the pod
+* kubectl port-forward [pod] [ports]  // exposing cluster ips and ports outside of the pod
+* kubectl expose ...  // exposing service features outside
+* kubectl create [resource] // creating resources
+* kubectl apply [resource] // update the status to the specified, doing changes as needed
+* kubectl delete pod [podname] 
+* kubectl delete -f [yaml fil]
+* kubectl create -f [yaml file] --dry-run --validate=true
+* kubectl apply -f [yaml file] --save-config  //adds annotations about yaml that was last run to understand state
+* kubectl edit -f [yaml file]  //lets you edit it in console
+* kubectl patch  // patch a specific property
+* kubectl exec [podname] [command e.g. sh] // run a command inside the image of the pod
 
 ## YAML
 ```
@@ -105,7 +105,7 @@ kubectl get deployment --show-labels
 kubectl ger deployment -l [label name=value]
 kubectl scale deployment [deployment-name] --replicas=[number of replicas]
 kubectl scale -f [deployment filename] --replicas=[number of replicas]
-e.g.  kubectl scale deployment [deployment-name] --replicas=[number of replicas]
+e.g. kubectl scale deployment [deployment-name] --replicas=[number of replicas]
 
 ### ReplicaSets
 - container is in a pod is in a ReplicaSet
