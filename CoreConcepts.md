@@ -105,6 +105,7 @@ kubectl get deployment --show-labels
 kubectl ger deployment -l [label name=value]
 kubectl scale deployment [deployment-name] --replicas=[number of replicas]
 kubectl scale -f [deployment filename] --replicas=[number of replicas]
+e.g.  kubectl scale deployment [deployment-name] --replicas=[number of replicas]
 
 ### ReplicaSets
 - container is in a pod is in a ReplicaSet
@@ -130,6 +131,8 @@ metadata:
         app: my-nginx
         tier: frontend
 spec:
+  replicas:4 
+  minReadySeconds: 10 
   selector:
     matchLabels:
         tier: frontend
@@ -144,6 +147,10 @@ spec:
           ports:
            - containerPort: 80
 ```
+
+### Rolling updates
+Create new pod, replace one of old, repeat until all pods replaced.
+This is default and automatic.
 
 
 ## Services
