@@ -249,9 +249,114 @@ Name of service in metadata section gives the service an internal DNS entry.  e.
 
 ## Storage
 
-###
+### Volumes 
+Store data and state for pods and containers
+Multiple volumes per pod
+Containers have mountPath to access volumes
 
-###
+
+*emptyDir example*
+
+share data between containers inside of same pod only for lifetime of pod
+```
+apiVersion: v1
+kind: pod
+spec:
+  volumes:
+    - name: html
+      emptyDir: {}
+  containers: 
+  - name: nginx
+    image: nginx:alpine
+    volumeMounts:
+      - name: html
+        mountPath: /usr/share/nginx/html
+        readonly: true
+  - name: html-updated
+    image: alpine
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do date >> /html/index.html;
+          sleep 10; done
+    volueMounts:
+      - name: html
+        mountPath: /html      
+        
+```
+
+*hostPath of Socket hostPath Type volume example file example*
+
+share data on a directory on a host where a pod happens to be running.  Danger pod might be rescheduled to a different node on restart.
+```
+apiVersion: v1
+kind: pod
+spec:
+  volumes:
+    - name: docker-socket
+      hostPath:
+        path: /var/run/docker.sock
+        type: Socket
+    containers:
+    - name: docker
+      image: docker
+      command: ["sleep"]
+      args: [100000"]
+      volumeMounts: 
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+
+```
+
+*azureFile example*
+```
+apiVersion: v1
+kind: pod
+metadata:
+  name: my-pod
+spec:
+  volumes:
+    - name: data
+      azureFile:
+        secretName: <azure-secret>
+        shareName: <share-name>
+        readOnly: false
+  containers:
+  - image: someimage
+    name: my-app
+    volumeMounts:
+    - name: data
+      mountPath: /data/storage
+```
+
+### PersistentVolumes
+* cluster wide storage provisioned by admin with lifecycle independent from the pod
+* need some sort of cloud or network attached storage for sharing
+* available to pod after restarts/rescheduling
+* relies on a storage provider
+* is registered with the Kubernetes API
+
+
+### PersistenVolumeClaims
+* request for storage unit of the persistent volume.  claim used in pod to talk to persistent storage.
+* kubernetes binds claim to persistent volume
+
+
+```
+apiVersion: v1
+
+
+```
+
+### StorageClasses
+
+### Types
+
+* emptyDir - shares a pods lifetime.  Share between containers in same Pod
+* hostPath - pod mounts onto the nodes filesystem
+* nfs - an NFS share mounted into the pod
+* configMap/secret - special volumes for pod to accesss Kubernetes resources
+* persistenVolumeClaim - more persisten storage abstracted from the details
+* Cloud - cluster wide storage
 
 ## Configmaps and Secrets
 
