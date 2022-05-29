@@ -255,6 +255,16 @@ Multiple volumes per pod
 Containers have mountPath to access volumes
 
 
+#### Types
+
+* emptyDir - shares a pods lifetime.  Share between containers in same Pod
+* hostPath - pod mounts onto the nodes filesystem
+* nfs - an NFS share mounted into the pod
+* configMap/secret - special volumes for pod to accesss Kubernetes resources
+* persistenVolumeClaim - more persisten storage abstracted from the details
+* Cloud - cluster wide storage
+
+
 *emptyDir example*
 
 share data between containers inside of same pod only for lifetime of pod
@@ -341,22 +351,114 @@ spec:
 * kubernetes binds claim to persistent volume
 
 
+*Example defining azure PVC*
+http://github.com/kubernetes/examples
+
 ```
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity: 10Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadeOnlyMany
+  persistentVolumeReclaimPolicy: Retain #dont delete if claim deleted
+  azureFile:
+    secretName: <azure-secret>
+    shareName: <name_from_azure>
+    readOnly: false
+```
 
+*Example PVClaim*
+```
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pv-dd-account-hdd-5g
+  annotations:
+    volume.beta.kubernetes.io/storage-class: accounthdd
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  
+```
+
+*Example claim usage in Pod*
+```
+kind: Pod
+apiVersion: v1
+...
+spec:
+  containers:
+  - image: nginx
+    name: az-c-01
+    command:
+    - #do something
+    volumeMounts:
+    - name: blobDisk01. # match name of volume pointing to volume claim
+      mountPath: /mnt/blobdisk
+  volumes:
+  - name: blobdisk01
+    persistentVolumeClaim
+      claimName: pv-dd-account-hdd-5g. # matching PVC name
 
 ```
 
+
+
 ### StorageClasses
+* SC - type of storage template used to dynamically provision storage
+* This is dynamic.  Instead of the PV/PVC exmples above that are static
+* DynamicProvisioning - Admin sets up SC.  Pod claims using PVC.  PV is dynamically provisioned by SC
 
-### Types
+* Example Storage Class*
+```
+apiVersion: sorage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage
+reclaimPolicy: Retain
+provisioner: #different storage type provisioners.  Can have statis provisioning if chossing a static provisioner
+volumeBindingMode: WaitForFirstConsumer #Default is immediate.  
+```
 
-* emptyDir - shares a pods lifetime.  Share between containers in same Pod
-* hostPath - pod mounts onto the nodes filesystem
-* nfs - an NFS share mounted into the pod
-* configMap/secret - special volumes for pod to accesss Kubernetes resources
-* persistenVolumeClaim - more persisten storage abstracted from the details
-* Cloud - cluster wide storage
+*Example PVC of storage class*
+```
+kind: persistenVolumeClaim
+metadata: 
+  name: my-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+*example pod/ /  using PVC and Storage Class*
+```
+apiVersion: apps/v1
+kind: [Pod | StatefulSet | Deployment]
+...
+  spec:
+    volumes:
+    - name: my-volume
+      persistentVolumeClaim:
+        claimName: my-pvc
+```
+
+## StatefulSets
+Stateful type of pod with
+- predictable name
+- guarantees ordering and uniqueness of pods
+
+some state features...?
 
 ## Configmaps and Secrets
 
