@@ -6,6 +6,8 @@ Main Benefits
 * Self healing powers
 * Scaling
 
+Notes based on : https://github.com/DanWahlin/DockerAndKubernetesCourseCode
+
 ## Commands
 
 * kubectl version 
@@ -508,7 +510,7 @@ kubectl create configmap [cm-name] --from-file=[path to file]
 
 
 *Example using environment file*
-Same as properties but... different command and NO filename as key
+Same as properties but... different command and NO filename as key and under data property
 kubectl create configmap [cm-name] --from-env-file=[path to file]
 
 or
@@ -554,14 +556,107 @@ spec:
           name: app-settings   #ConfigMap name
 ```
 
- *Example accessing configMap Volume*
-  
-```
-  
-```
-  
-### 
 
+*Example accessing configMap Volume*
+each value maps to a file with name of key and content of value.  Load the files ourselves.
+```
+apiVersion: apps/v1
+...
+  
+spec:
+  template:
+    ...
+  spec:    
+    volumes:
+    - name: app-config-vol
+      configMap:
+        name: app-settings #matches the configMap name
+    containers:
+      volumeMounts:
+        - name: app-config-vol
+          mountPath: /etc/config       
+```
+  
+kubectl delete cm [configMap name]  
+  
+  
+### Secrets
+* An object with small amount of sensitive data.
+* Can securely make it available to pods and containers in pods.
+* No secrets in container images/files/deployment manifests
+* Can mount secrets into pods as files 
+  or
+* As Env variables
+* Only pods that need the secrets get access to them  
+* Stored in tmpfs on the node so not on disk
+* stored on master node /etcd
+* SSL/TLS for etcd peer to peer
+* Manifests are not encrypted, just encoded
+* Role based access control RBAC to secure who can create pods  
+
+#### Creating
+
+kubectl create secret generic my-secret --from-literal=pwd=my-password    #save literal password
+kubectl create secret generic my-secret --from-file=ssh-privatekey=~/.ssh/id_rsa -- from-file=ssh-publickey=~/.ssh/id_rsa.pub
+kubectl create secret tls tls-secret --cer=path/to/tls.cert --key=path/to/tls/key
+  
+*Example secrets yaml but only base64 encoded*
+```
+apiversion: v1
+kind: Secret
+metadata:
+  name: db-paswords
+type: Opaque
+data:
+  app-password:  <some base 64 encoded>
+  admin-password: <another base 64 encoded>
+```
+  
+#### Using
+kubectl get secrets
+kubectl get secrete [secret name] -o yaml     #come out base64 encoded
+
+  
+*Example secret into single env variable*  
+```
+  apiVersion: apps/v1
+  ..
+  spec:
+    template:
+      ...
+    spec:
+      containers: 
+         ...
+      env:
+      - name: DATABASE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: db-passwords
+            key: db-password
+```
+
+  
+*Example secrets file into volume mount*  
+```
+  apiVersion: apps/v1
+  ..
+  spec:
+    template:
+      ...
+    spec:
+      Volumes:
+      - name: secrets
+        secret:
+          secretName:db-passwords
+      containers: 
+       ...
+        volumeMounts:
+          - name: secrets
+            mountPath: /etc/db-passwords
+            readOnly: true
+```
+  
+  
 ## All together
 
 ###
