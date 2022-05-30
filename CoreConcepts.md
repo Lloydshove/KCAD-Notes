@@ -461,10 +461,106 @@ Stateful type of pod with
 some state features...?
 
 ## Configmaps and Secrets
+* Part of storage 
+* Pods use to get data into containers
 
-###
+### Configmaps
+* Way to store config info and provide it to containers
+* Accessible throughout the cluster
+* Inject config data into container
+* Can store entire files
+  * Filename is key, content is value
+  * Can pass on command line
+  * ConfigMap manifest file
+* Accessed by pod from env variables 
+OR 
+* ConfigMap Volume (access files)  
 
-###
+#### Creating
+
+*Example ConfigMap*
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-settings
+  labels:
+    app: app-settings
+data:
+  enemies: aliens
+  lives: "3"
+  enemies.cheat: "true"
+  enemies.cheat.level=noGoodRotten
+```
+
+kubectl create -f file.configmap.yml
+
+*Example key/value pairs file*
+```
+enemies=aliens
+lives=3
+enemies.cheat=true
+enemies.cheat.level=noGoodRotten
+```
+kubectl create configmap [cm-name] --from-file=[path to file]
+
+*But* key values created a little different.  file name becomes the key. 
+
+
+*Example using environment file*
+Same as properties but... different command and NO filename as key
+kubectl create configmap [cm-name] --from-env-file=[path to file]
+
+or
+
+kubectl create configmap [cm-name] --from-literal=<key>=<value>. --from-literal=[more examples....]
+  
+#### Using
+
+kubectl get cm [cm-nam] -o yaml
+  
+*Example using env-vars for single variables*
+```
+apiVersion: apps/v1
+...
+  
+spec:
+  template:
+    ...
+  spec:
+    containers: ...
+    env:
+    - name: Enemies     # ENV Variable name
+      valueFrom:   # Value instead of ENV
+        configMapKeyRef:
+          name: app-settings   #ConfigMap name
+          key: enemies    #Key in ConfigMap
+```
+
+*Example using env vars loading hole ConfigMap contents*
+```
+apiVersion: apps/v1
+...
+  
+spec:
+  template:
+    ...
+  spec:
+    containers: ...
+    env:
+    - name: Enemies     # ENV Variable 
+      envFrom:    #ENV instead of Value
+        configMapKeyRef:
+          name: app-settings   #ConfigMap name
+```
+
+ *Example accessing configMap Volume*
+  
+```
+  
+```
+  
+### 
 
 ## All together
 
