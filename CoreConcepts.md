@@ -29,6 +29,7 @@ Notes based on : https://github.com/DanWahlin/DockerAndKubernetesCourseCode
 * kubectl edit -f [yaml file]  //lets you edit it in console
 * kubectl patch  // patch a specific property
 * kubectl exec [podname] [command e.g. sh] // run a command inside the image of the pod
+* kubectl create -f .k8s  //give folder name and all yamls then executed configuring them all
 
 ## YAML
 ```
@@ -113,7 +114,7 @@ e.g. kubectl scale deployment [deployment-name] --replicas=[number of replicas]
 - container is in a pod is in a ReplicaSet
 - self healing mechanism that brings deleted pods back to life
 - provides fault tollerance and scaling horizontalls
-- relies on pod templates
+- relies on pods
 
 ### Deployments
 - Manages ReplicaSets
@@ -655,12 +656,29 @@ kubectl get secrete [secret name] -o yaml     #come out base64 encoded
             mountPath: /etc/db-passwords
             readOnly: true
 ```
+
+## Misc
+  
+### Troubleshooting 
+* kubectl logs [pod-name]
+* kubectl logs [pod-name] -c [container-name]
+* kubectl logs -p [pod-name]  //for a previously running pod
+* kubectl logs -f pod-name  //streams the logs
+* kubectl describe pod [pod-name] 
+* kubectl get pod [pod-name] 0o yaml|json  // all details
+* kubectl get deployment [deploy-name] 0o yaml|json  // all details
+* kubectl exec [pod-name] -it sh  // check connections, whats happening etc.
+* kubectl get pods --watch   // see updates
+
+apk add curl // for connecting internally checking network routes working
+  
+Example errors :
+  secret not found
   
   
-## All together
-
-###
-
-###
+### Thoughts
+* config (non secrets) in configMaps or done by docker?
+  
+  
 
 
