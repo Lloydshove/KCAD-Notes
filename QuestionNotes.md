@@ -37,3 +37,37 @@ Stateful Sets are a resource that provides an ordered automated rolling update.
 
 Blue Green deployments give zero downtime, instant switchover and fast rollback.
 
+---
+
+kompose topic and applying output files
+
+---
+
+Service account creation topic
+
+---
+
+Ingress controller
+
+---
+
+Env Var files
+
+---
+
+Modifying secrets
+
+---
+
+
+
+---
+
+
+
+---
+
+
+
+---
+
