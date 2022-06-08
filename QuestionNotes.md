@@ -59,7 +59,7 @@ Modifying secrets
 
 ---
 
-
+StatefulSet
 
 ---
 
