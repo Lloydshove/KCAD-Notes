@@ -63,6 +63,45 @@ StatefulSet
 
 ---
 
+What property of a Pod do you set to provide configuration to the container it is running? 
+
+
+---
+
+When would you use ImagePullSecrets?
+
+---
+
+When connecting to the external IP (123.34.56.78) on Transmission Control Protocol (TCP) Port 80 you get a timeout. What would you do to solve the timeout?
+
+Confirm the Pods are running for capture-order-api;
+Check that the Dockerfile expose port matches the TargetPort in the service definition.
+
+---
+
+What property of a Pod do you set to provide configuration to the container it is running? 
+Environment Variables
+
+---
+
+What is the general purpose of labels and selectors in Kubernetes?
+To meaningfully identify objects for users but not by directly implying semantics to the core system
+
+
+---
+
+Given a deployment called mydeployment, which kubectl command sets up a port forward from your localhost on port 8888 to a Pod selected by mydeployment on port 5000?
+
+kubectl port-forward **deployment**/mydeployment 8888:5000
+
+---
+
+Kubernetes design patterns!!
+
+---
+
+
+---
 
 
 ---
